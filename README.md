@@ -30,10 +30,10 @@ Ou clonez et ouvrez `index.html` dans votre navigateur.
 - 100% écologique
 
 ### 📫 Contact
-
-Créé par Laurent B. - Marchand de Bonheur
+- Email :Makamind E.A.G. Agent contact@energy-alternatives-group.eu
+ 
 - Hub principal : [Energy Alternatives Group](https://lemarchanddebonheur9.github.io/energy-alternatives-group/)
-- Email : contact@energy-alternatives-group.eu
+Créé par Laurent B.
 
 ### 📜 Licence
 

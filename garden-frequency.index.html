@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garden Frequency - Électroculture & 432 Hz</title>
+    <meta name="description" content="Application d'électroculture : calculateur d'antennes, calendrier lunaire, générateur 432 Hz pour optimiser votre jardin énergétique">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #00ff88;
+            --secondary: #00aaff;
+            --accent: #9370db;
+            --dark: #0a1628;
+            --light: #ffffff;
+            --gray: #b0b0b0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a1628 0%, #1a2332 50%, #0a1628 100%);
+            color: var(--light);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(10, 22, 40, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: var(--light);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+        
+        .tab-btn:hover {
+            background: rgba(0, 255, 136, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .tab-btn.active {
+            background: var(--primary);
+            color: var(--dark);
+            font-weight: 600;
+        }
+        
+        /* Content Sections */
+        .content-section {
+            display: none;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        /* Calculator Styles */
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .input-group {
+            margin-bottom: 1rem;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+        
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 8px;
+            color: var(--light);
+            font-size: 1rem;
+        }
+        
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: var(--dark);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin: 0.5rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: var(--dark);
+        }
+        
+        /* Results */
+        .results {
+            background: rgba(0, 255, 136, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        .results h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Lunar Calendar */
+        .lunar-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .lunar-card {
+            background: rgba(147, 112, 219, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid var(--accent);
+        }
+        
+        .moon-phase {
+            font-size: 3rem;
+            margin: 0.5rem 0;
+        }
+        
+        .lunar-card h4 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* 432Hz Generator */
+        .frequency-control {
+            background: rgba(0, 170, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        
+        .frequency-display {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin: 1rem 0;
+            font-weight: bold;
+        }
+        
+        .wave-animation {
+            height: 100px;
+            margin: 1rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .wave {
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(0, 170, 255, 0.3), 
+                transparent, 
+                rgba(0, 170, 255, 0.3), 
+                transparent);
+            animation: wave 2s linear infinite;
+        }
+        
+        @keyframes wave {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+        
+        .wave.active {
+            animation-duration: 0.5s;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tab-btn {
+                width: 80%;
+                max-width: 300px;
+            }
+        }
+        
+        /* Animations */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <h1 class="logo">🌱 Garden Frequency</h1>
+        <p class="subtitle">Électroculture • Calendrier Lunaire • 432 Hz</p>
+    </header>
+    
+    <!-- Navigation -->
+    <nav class="nav-tabs">
+        <button class="tab-btn active" onclick="showTab('calculator')">⚡ Calculateur</button>
+        <button class="tab-btn" onclick="showTab('lunar')">🌙 Calendrier Lunaire</button>
+        <button class="tab-btn" onclick="showTab('frequency')">🎵 432 Hz</button>
+        <button class="tab-btn" onclick="showTab('guide')">📖 Guide</button>
+    </nav>
+    
+    <!-- Calculator Section -->
+    <section id="calculator" class="content-section active">
+        <div class="card">
+            <h2>⚡ Calculateur d'Antennes Tesla</h2>
+            <p style="color: var(--gray); margin-bottom: 1rem;">
+                Déterminez le nombre optimal d'antennes pour votre jardin
+            </p>
+            
+            <div class="calculator-grid">
+                <div class="input-group">
+                    <label for="surface">Surface du jardin (m²)</label>
+                    <input type="number" id="surface" placeholder="Ex: 100" min="1">
+                </div>
+                
+                <div class="input-group">
+                    <label for="culture">Type de culture</label>
+                    <select id="culture">
+                        <option value="potager">Potager mixte</option>
+                        <option value="tomates">Tomates</option>
+                        <option value="legumes">Légumes racines</option>
+                        <option value="fruits">Arbres fruitiers</option>
+                        <option value="fleurs">Fleurs</option>
+                        <option value="cereales">Céréales</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="sol">Type de sol</label>
+                    <select id="sol">
+                        <option value="normal">Normal</option>
+                        <option value="argileux">Argileux</option>
+                        <option value="sableux">Sableux</option>
+                        <option value="calcaire">Calcaire</option>
+                        <option value="humifere">Humifère</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="exposition">Exposition</label>
+                    <select id="exposition">
+                        <option value="ensoleille">Très ensoleillé</option>
+                        <option value="mi-ombre">Mi-ombre</option>
+                        <option value="ombre">Ombragé</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="calculerAntennes()">Calculer</button>
+            
+            <div id="resultat" class="results" style="display: none;">
+                <h3>📊 Résultats de votre analyse</h3>
+                <div id="resultat-content"></div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Lunar Calendar Section -->
+    <section id="lunar" class="content-section">
+        <div class="card">
+            <h2>🌙 Calendrier Lunaire Électroculture</h2>
+            <p style="color: var(--gray); margin-bottom: 1rem;">
+                Optimisez vos travaux selon les phases lunaires
+            </p>
+            
+            <div class="lunar-info">
+                <div class="lunar-card">
+                    <h4>Phase Actuelle</h4>
+                    <div class="moon-phase" id="moon-emoji">🌕</div>
+                    <p id="moon-phase-name">Pleine Lune</p>
+                </div>
+                
+                <div class="lunar-card">
+                    <h4>Jour Lunaire</h4>
+                    <div style="font-size: 2rem; color: var(--accent);" id="lunar-day">14</div>
+                    <p>sur 29.5 jours</p>
+                </div>
+                
+                <div class="lunar-card">
+                    <h4>Activité Recommandée</h4>
+                    <p id="lunar-activity" style="color: var(--primary);">Installation d'antennes</p>
+                </div>
+            </div>
+            
+            <div class="results" style="margin-top: 2rem;">
+                <h3>📅 Prochains Jours Favorables</h3>
+                <ul id="favorable-days" style="list-style: none; padding: 0;">
+                    <li style="padding: 0.5rem 0;">• <strong>Nouvelle Lune (dans 7 jours)</strong> : Semis, plantation</li>
+                    <li style="padding: 0.5rem 0;">• <strong>Lune Croissante (dans 10 jours)</strong> : Installation antennes</li>
+                    <li style="padding: 0.5rem 0;">• <strong>Pleine Lune (dans 14 jours)</strong> : Récolte, taille</li>
+                </ul>
+            </div>
+            
+            <div class="card" style="background: rgba(147, 112, 219, 0.05); margin-top: 2rem;">
+                <h3 style="color: var(--accent);">🔮 Influence Électroculture</h3>
+                <p>Les champs électromagnétiques sont amplifiés pendant :</p>
+                <ul style="list-style: none; padding: 1rem 0;">
+                    <li style="padding: 0.3rem 0;">⚡ <strong>Nouvelle Lune</strong> : +40% d'efficacité</li>
+                    <li style="padding: 0.3rem 0;">🌓 <strong>Premier Quartier</strong> : +20% d'efficacité</li>
+                    <li style="padding: 0.3rem 0;">🌕 <strong>Pleine Lune</strong> : +60% d'efficacité</li>
+                    <li style="padding: 0.3rem 0;">🌗 <strong>Dernier Quartier</strong> : +15% d'efficacité</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 432 Hz Generator Section -->
+    <section id="frequency" class="content-section">
+        <div class="card">
+            <h2>🎵 Générateur 432 Hz</h2>
+            <p style="color: var(--gray); margin-bottom: 1rem;">
+                Nourrissez vos plantes avec la fréquence de la nature
+            </p>
+            
+            <div class="frequency-control">
+                <div class="frequency-display">432 Hz</div>
+                <div class="wave-animation">
+                    <div class="wave" id="wave"></div>
+                </div>
+                
+                <div style="margin: 2rem 0;">
+                    <button class="btn" id="playBtn" onclick="toggleSound()">▶️ Jouer</button>
+                    <button class="btn btn-secondary" onclick="changeFrequency(432)">432 Hz</button>
+                    <button class="btn btn-secondary" onclick="changeFrequency(528)">528 Hz</button>
+                    <button class="btn btn-secondary" onclick="changeFrequency(639)">639 Hz</button>
+                </div>
+                
+                <div class="input-group" style="max-width: 300px; margin: 2rem auto;">
+                    <label for="volume">Volume</label>
+                    <input type="range" id="volume" min="0" max="100" value="50" oninput="changeVolume(this.value)">
+                </div>
+            </div>
+            
+            <div class="results">
+                <h3>🌱 Bénéfices pour vos plantes</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 0.5rem 0;">✓ Stimulation de la croissance cellulaire</li>
+                    <li style="padding: 0.5rem 0;">✓ Amélioration de l'absorption des nutriments</li>
+                    <li style="padding: 0.5rem 0;">✓ Renforcement du système immunitaire végétal</li>
+                    <li style="padding: 0.5rem 0;">✓ Harmonisation avec les fréquences terrestres</li>
+                </ul>
+                
+                <p style="margin-top: 1rem; color: var(--gray);">
+                    <em>Recommandation : 30 minutes par jour, de préférence le matin</em>
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Guide Section -->
+    <section id="guide" class="content-section">
+        <div class="card">
+            <h2>📖 Guide d'Utilisation</h2>
+            
+            <h3 style="color: var(--primary); margin: 1.5rem 0 1rem;">Comment utiliser Garden Frequency</h3>
+            <ul style="line-height: 2;">
+                <li><strong>Calculateur d'Antennes :</strong> Entrez les caractéristiques de votre jardin pour obtenir le nombre optimal d'antennes Tesla et leur placement idéal.</li>
+                <li><strong>Calendrier Lunaire :</strong> Consultez les phases lunaires et les jours favorables pour vos travaux d'électroculture.</li>
+                <li><strong>Générateur 432 Hz :</strong> Diffusez des fréquences harmoniques pour stimuler la croissance de vos plantes.</li>
+            </ul>
+            
+            <h3 style="color: var(--primary); margin: 1.5rem 0 1rem;">Principe de l'Électroculture</h3>
+            <p>L'électroculture utilise les champs électromagnétiques naturels de l'atmosphère pour :</p>
+            <ul style="margin: 1rem 0; padding-left: 2rem;">
+                <li>Augmenter les rendements de 20 à 40%</li>
+                <li>Réduire les besoins en eau de 30 à 50%</li>
+                <li>Améliorer la résistance aux maladies</li>
+                <li>Accélérer la germination et la croissance</li>
+            </ul>
+            
+            <div class="results" style="margin-top: 2rem;">
+                <h3>⚡ Installation Optimale</h3>
+                <ol style="padding-left: 1.5rem; line-height: 2;">
+                    <li>Installez les antennes à la nouvelle lune ou lune croissante</li>
+                    <li>Orientez-les vers le nord magnétique</li>
+                    <li>Espacez-les de 15 à 30 mètres</li>
+                    <li>Hauteur idéale : 1,5 à 2 mètres</li>
+                    <li>Utilisez du cuivre pur non traité</li>
+                </ol>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="https://lemarchanddebonheur9.github.io/energy-alternatives-group/" class="btn" target="_blank">
+                    Visitez Energy Alternatives Group
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2024 Garden Frequency - Une création de <a href="https://lemarchanddebonheur9.github.io/energy-alternatives-group/" target="_blank">Energy Alternatives Group</a></p>
+        <p>Par Laurent B. - Marchand de Bonheur • Tesla 3-6-9 • Énergie Libre</p>
+    </footer>
+    
+    <script>
+        // Audio Context pour 432Hz
+        let audioContext = null;
+        let oscillator = null;
+        let gainNode = null;
+        let isPlaying = false;
+        let currentFrequency = 432;
+        
+        // Tab Navigation
+        function showTab(tabName) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active from all tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active to clicked tab
+            event.target.classList.add('active');
+        }
+        
+        // Calculateur d'Antennes
+        function calculerAntennes() {
+            const surface = parseFloat(document.getElementById('surface').value);
+            const culture = document.getElementById('culture').value;
+            const sol = document.getElementById('sol').value;
+            const exposition = document.getElementById('exposition').value;
+            
+            if (!surface || surface <= 0) {
+                alert('Veuillez entrer une surface valide');
+                return;
+            }
+            
+            // Calcul basé sur la surface (1 antenne pour 20-30m²)
+            let nombreAntennes = Math.ceil(surface / 25);
+            
+            // Ajustements selon le type de culture
+            const cultureFactors = {
+                'potager': 1,
+                'tomates': 1.2,
+                'legumes': 0.9,
+                'fruits': 0.8,
+                'fleurs': 1.1,
+                'cereales': 0.7
+            };
+            
+            nombreAntennes = Math.ceil(nombreAntennes * cultureFactors[culture]);
+            
+            // Ajustements selon le sol
+            if (sol === 'argileux') nombreAntennes += 1;
+            if (sol === 'sableux') nombreAntennes += 1;
+            
+            // Ajustements selon l'exposition
+            if (exposition === 'ombre') nombreAntennes += 1;
+            
+            // Calcul de la hauteur optimale
+            let hauteurOptimale = surface < 50 ? 1.5 : surface < 200 ? 2 : 2.5;
+            
+            // Affichage des résultats
+            const resultatDiv = document.getElementById('resultat');
+            const resultatContent = document.getElementById('resultat-content');
+            
+            resultatContent.innerHTML = `
+                <div style="margin-bottom: 1rem;">
+                    <strong style="color: var(--primary); font-size: 1.2rem;">
+                        Nombre d'antennes recommandé : ${nombreAntennes}
+                    </strong>
+                </div>
+                <div style="display: grid; gap: 1rem; margin-top: 1rem;">
+                    <div>
+                        <strong>Configuration optimale :</strong>
+                        <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                            <li>Hauteur des antennes : ${hauteurOptimale}m</li>
+                            <li>Espacement : ${Math.round(Math.sqrt(surface / nombreAntennes) * 2)}m entre chaque</li>
+                            <li>Matériau : Cuivre pur 2-3mm de diamètre</li>
+                            <li>Disposition : En quinconce pour une couverture optimale</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(0, 255, 136, 0.1); padding: 1rem; border-radius: 8px;">
+                        <strong>💡 Conseil personnalisé :</strong>
+                        <p style="margin-top: 0.5rem;">
+                            ${getConseilPersonnalise(culture, sol, exposition)}
+                        </p>
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <strong>Rendement estimé :</strong>
+                        <div style="font-size: 2rem; color: var(--primary); margin: 0.5rem 0;">
+                            +${20 + Math.floor(nombreAntennes * 3)}%
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            resultatDiv.style.display = 'block';
+        }
+        
+        function getConseilPersonnalise(culture, sol, exposition) {
+            const conseils = {
+                'potager': "Placez une antenne au centre de chaque zone de culture différente.",
+                'tomates': "Les tomates répondent particulièrement bien. Placez une antenne tous les 3-4 pieds.",
+                'legumes': "Concentrez les antennes près des légumes racines pour stimuler la croissance souterraine.",
+                'fruits': "Une antenne par arbre fruitier, idéalement au nord de l'arbre.",
+                'fleurs': "Les fleurs apprécient l'électroculture. Effet spectaculaire sur les roses !",
+                'cereales': "Espacez davantage les antennes, les céréales ont besoin de moins de stimulation."
+            };
+            
+            let conseil = conseils[culture] || "Configuration standard recommandée.";
+            
+            if (sol === 'argileux') {
+                conseil += " Sol argileux détecté : ajoutez du sable autour des antennes pour améliorer la conductivité.";
+            }
+            
+            if (exposition === 'ombre') {
+                conseil += " Zone ombragée : l'électroculture compensera partiellement le manque de soleil.";
+            }
+            
+            return conseil;
+        }
+        
+        // Calendrier Lunaire
+        function updateLunarCalendar() {
+            // Calcul simplifié de la phase lunaire actuelle
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1;
+            const day = today.getDate();
+            
+            // Algorithme simplifié pour la phase lunaire
+            let c = 0;
+            let e = 0;
+            let jd = 0;
+            let b = 0;
+            
+            if (month < 3) {
+                year--;
+                month += 12;
+            }
+            
+            month++;
+            c = 365.25 * year;
+            e = 30.6 * month;
+            jd = c + e + day - 694039.09;
+            jd /= 29.5305882;
+            b = parseInt(jd);
+            jd -= b;
+            b = Math.round(jd * 8);
+            
+            if (b >= 8) b = 0;
+            
+            const phases = [
+                { emoji: '🌑', name: 'Nouvelle Lune', activity: 'Semis et plantation' },
+                { emoji: '🌒', name: 'Lune Croissante', activity: 'Installation antennes' },
+                { emoji: '🌓', name: 'Premier Quartier', activity: 'Fertilisation énergétique' },
+                { emoji: '🌔', name: 'Lune Gibbeuse', activity: 'Arrosage énergétisé' },
+                { emoji: '🌕', name: 'Pleine Lune', activity: 'Récolte et taille' },
+                { emoji: '🌖', name: 'Lune Décroissante', activity: 'Maintenance antennes' },
+                { emoji: '🌗', name: 'Dernier Quartier', activity: 'Préparation du sol' },
+                { emoji: '🌘', name: 'Lune Balsamique', activity: 'Repos du jardin' }
+            ];
+            
+            const currentPhase = phases[b];
+            document.getElementById('moon-emoji').textContent = currentPhase.emoji;
+            document.getElementById('moon-phase-name').textContent = currentPhase.name;
+            document.getElementById('lunar-activity').textContent = currentPhase.activity;
+            
+            // Jour lunaire approximatif
+            const lunarDay = Math.round(jd * 29.5);
+            document.getElementById('lunar-day').textContent = lunarDay || 1;
+        }
+        
+        // 432 Hz Generator
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        
+        function toggleSound() {
+            initAudio();
+            
+            if (isPlaying) {
+                stopSound();
+            } else {
+                playSound();
+            }
+        }
+        
+        function playSound() {
+            if (!audioContext) return;
+            
+            oscillator = audioContext.createOscillator();
+            gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = currentFrequency;
+            oscillator.type = 'sine';
+            gainNode.gain.value = 0.5;
+            
+            oscillator.start();
+            isPlaying = true;
+            
+            document.getElementById('playBtn').textContent = '⏸️ Pause';
+            document.getElementById('wave').classList.add('active');
+        }
+        
+        function stopSound() {
+            if (oscillator) {
+                oscillator.stop();
+                oscillator = null;
+            }
+            isPlaying = false;
+            
+            document.getElementById('playBtn').textContent = '▶️ Jouer';
+            document.getElementById('wave').classList.remove('active');
+        }
+        
+        function changeFrequency(freq) {
+            currentFrequency = freq;
+            document.querySelector('.frequency-display').textContent = freq + ' Hz';
+            
+            if (isPlaying && oscillator) {
+                oscillator.frequency.value = freq;
+            }
+        }
+        
+        function changeVolume(value) {
+            if (gainNode) {
+                gainNode.gain.value = value / 100;
+            }
+        }
+        
+        // Initialize on load
+        window.addEventListener('load', () => {
+            updateLunarCalendar();
+            
+            // Update lunar calendar every minute
+            setInterval(updateLunarCalendar, 60000);
+            
+            // Add smooth scroll
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        });
+        
+        // Prevent audio from continuing when page is closed
+        window.addEventListener('beforeunload', () => {
+            if (isPlaying) {
+                stopSound();
+            }
+        });
+    </script>
+</body>
+</html>
